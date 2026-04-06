@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 
 const navItems = [
@@ -16,19 +17,35 @@ const navItems = [
 export default function SchoolLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-green-800 text-white px-6 h-14 flex items-center justify-between sticky top-0 z-10">
-        <div className="font-bold text-lg">🌿 ボランティアMatch — 学校担当</div>
-        <button onClick={() => router.push('/')} className="text-xs border border-white/50 px-3 py-1 rounded-lg hover:bg-white/20">ログアウト</button>
+      <header className="bg-green-800 text-white px-4 h-14 flex items-center justify-between sticky top-0 z-20">
+        <div className="flex items-center gap-3">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-white text-xl md:hidden">☰</button>
+          <div className="font-bold text-sm md:text-base whitespace-nowrap">🌿 ボランティアMatch</div>
+        </div>
+        <button onClick={() => router.push('/')} className="text-xs border border-white/50 px-2 py-1 rounded-lg hover:bg-white/20 whitespace-nowrap">ログアウト</button>
       </header>
+
       <div className="flex">
-        <aside className="w-56 bg-white border-r border-gray-200 min-h-screen p-4 flex-shrink-0">
+        {/* オーバーレイ（スマホ用） */}
+        {menuOpen && (
+          <div className="fixed inset-0 bg-black/40 z-10 md:hidden" onClick={() => setMenuOpen(false)} />
+        )}
+
+        {/* サイドバー */}
+        <aside className={`
+          fixed top-14 left-0 h-full w-56 bg-white border-r border-gray-200 p-4 z-10 transition-transform
+          md:static md:translate-x-0 md:flex-shrink-0
+          ${menuOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}>
           <nav className="space-y-1">
             {navItems.map(item => (
               <button
                 key={item.path}
-                onClick={() => router.push(item.path)}
+                onClick={() => { router.push(item.path); setMenuOpen(false) }}
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all border-l-2 ${
                   pathname === item.path
                     ? 'bg-green-50 text-green-700 font-bold border-green-600'
@@ -40,7 +57,8 @@ export default function SchoolLayout({ children }: { children: React.ReactNode }
             ))}
           </nav>
         </aside>
-        <main className="flex-1 p-7">{children}</main>
+
+        <main className="flex-1 p-4 md:p-7 min-w-0">{children}</main>
       </div>
     </div>
   )
