@@ -1,10 +1,48 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import OrgLayout from '@/components/OrgLayout'
+import { submitOffer } from './action'
 
 export default function OrgRegisterPage() {
-  const [form, setForm] = useState({ org: '', contact_name: '', email: '', phone: '', title: '', date: '', time_slot: '', deadline: '', slots: '', place: '', detail: '', motimono: '', fukusou: '', chui: '' })
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({
+    org: '', contact_name: '', email: '', phone: '',
+    title: '', date: '', time_slot: '', deadline: '',
+    slots: '', place: '', detail: '', motimono: '', fukusou: '', chui: ''
+  })
   const update = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+
+  const handleSubmit = async () => {
+    if (!form.org || !form.title || !form.date || !form.deadline || !form.slots) {
+      alert('❌ 必須項目を入力してください')
+      return
+    }
+    setLoading(true)
+    try {
+      await submitOffer({
+        org: form.org,
+        title: form.title,
+        date: form.date,
+        deadline: form.deadline,
+        time_slot: form.time_slot,
+        place: form.place,
+        slots: parseInt(form.slots),
+        contact: form.email,
+        detail: form.detail,
+        motimono: form.motimono,
+        fukusou: form.fukusou,
+        chui: form.chui,
+      })
+      alert('✅ 申請を送信しました！\n学校から確認のご連絡をお待ちください。')
+      router.push('/org/dashboard')
+    } catch (e: unknown) {
+      alert('❌ エラーが発生しました：' + (e instanceof Error ? e.message : String(e)))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <OrgLayout>
@@ -13,7 +51,7 @@ export default function OrgRegisterPage() {
       <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div><label className="text-xs font-bold text-gray-600 block mb-1">団体・組織名 <span className="text-red-500">*</span></label><input value={form.org} onChange={e => update('org', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" placeholder="例：西区社会福祉協議会" /></div>
-          <div><label className="text-xs font-bold text-gray-600 block mb-1">担当者名 <span className="text-red-500">*</span></label><input value={form.contact_name} onChange={e => update('contact_name', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" placeholder="山田 太郎" /></div>
+          <div><label className="text-xs font-bold text-gray-600 block mb-1">担当者名</label><input value={form.contact_name} onChange={e => update('contact_name', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" placeholder="山田 太郎" /></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div><label className="text-xs font-bold text-gray-600 block mb-1">連絡先メール <span className="text-red-500">*</span></label><input type="email" value={form.email} onChange={e => update('email', e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" placeholder="example@email.com" /></div>
@@ -45,7 +83,9 @@ export default function OrgRegisterPage() {
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
           📌 登録後、学校担当が内容を確認してから生徒に公開されます。内容を修正する場合がありますが、あらかじめご了承ください。
         </div>
-        <button className="w-full md:w-auto bg-green-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-green-900">📤 申請する</button>
+        <button onClick={handleSubmit} disabled={loading} className="w-full md:w-auto bg-green-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-green-900 disabled:opacity-50">
+          {loading ? '送信中...' : '📤 申請する'}
+        </button>
       </div>
     </OrgLayout>
   )
