@@ -18,31 +18,38 @@ export default function SchoolLogin() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-700 to-green-400">
-      <div className="bg-white rounded-2xl p-10 w-full max-w-sm shadow-2xl text-center">
-        <div className="text-4xl mb-3">🏫</div>
-        <div className="text-lg font-bold text-gray-800 mb-1">学校担当ログイン</div>
-        <div className="text-xs text-gray-500 mb-6">パスワードを入力してください</div>
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleLogin()}
-          placeholder="パスワード"
-          className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-center text-lg tracking-widest mb-2 outline-none focus:border-green-400"
-        />
-        <div className="text-xs text-red-500 mb-3 h-4">{error}</div>
-        <button
-          onClick={handleLogin}
-          className="w-full bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-900 transition-all"
-        >
-          ログイン
-        </button>
-        <button
-          onClick={() => router.push('/')}
-          className="mt-3 text-xs text-gray-400 hover:text-green-700"
-        >
-          ← ロール選択に戻る
-        </button>
+      <div className="w-full max-w-sm px-4">
+        {/* デモバナー */}
+        <div className="bg-yellow-400 text-yellow-900 rounded-xl px-4 py-3 mb-4 text-sm font-bold text-center shadow">
+          🎓 校長会デモ用<br />
+          パスワード：<span className="text-lg tracking-widest">school2025</span>
+        </div>
+        <div className="bg-white rounded-2xl p-10 shadow-2xl text-center">
+          <div className="text-4xl mb-3">🏫</div>
+          <div className="text-lg font-bold text-gray-800 mb-1">学校担当ログイン</div>
+          <div className="text-xs text-gray-500 mb-6">パスワードを入力してください</div>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            placeholder="パスワード"
+            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-center text-lg tracking-widest mb-2 outline-none focus:border-green-400"
+          />
+          <div className="text-xs text-red-500 mb-3 h-4">{error}</div>
+          <button
+            onClick={handleLogin}
+            className="w-full bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-900 transition-all"
+          >
+            ログイン
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className="mt-3 text-xs text-gray-400 hover:text-green-700"
+          >
+            ← ロール選択に戻る
+          </button>
+        </div>
       </div>
     </main>
   )
